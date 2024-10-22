@@ -1,0 +1,360 @@
+#Importing libraries
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import skew
+from scipy.stats import kurtosis
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+%matplotlib inline
+import seaborn as sns
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn import linear_model
+from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import KFold
+from sklearn.cluster import KMeans
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
+from google.colab import drive
+drive.mount('/content/drive')
+#Mounted at /content/drive
+
+#Reading Data
+df=pd.read_csv('heart (1).csv')
+df.head()
+df.info()
+df.describe()
+df.isnull().sum()
+df.dtypes
+df.shape
+
+# Check Outliers
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Assuming your dataset is loaded into the DataFrame called 'df'
+
+# Replace 'df' with your actual DataFrame name if different.
+
+# List of columns with numeric data
+numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
+
+# Function to detect and visualize outliers using box plots
+def detect_and_visualize_outliers(data_frame, column_name):
+
+# Create a box plot for the given column
+plt.figure(figsize=(8, 6))
+plt.boxplot(data_frame[column_name], vert=False)
+plt.title(f'Box Plot of {column_name}')
+plt.show()
+
+# Calculate the Interquartile Range (IQR) for the column
+Q1 = data_frame[column_name].quantile(0.25)
+Q3 = data_frame[column_name].quantile(0.75)
+IQR = Q3 - Q1
+
+# Calculate the lower and upper bounds for outlier detection
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# Find and display the outliers
+outliers = data_frame[(data_frame[column_name] < lower_bound) |␣
+↪(data_frame[column_name] > upper_bound)]
+print(f"Outliers in '{column_name}':")
+
+# print(outliers)
+
+# Loop through each numeric column and visualize outliers
+for col in numeric_columns:
+detect_and_visualize_outliers(df, col)
+#Data Spilt
+x=df.drop('target',axis=1)
+x.head()
+y=df.target
+y.head()
+ X_train, X_test, y_train, y_test =train_test_split(x,y,test_size=0.25)
+
+#Correlation Matrix
+plt.figure(figsize=(12,10))
+cor=x.corr()
+sns.heatmap(cor,annot=True,cmap=plt.cm.Greens)
+plt.show()
+
+ import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix,␣
+↪classification_report
+# Load the dataset and perform train-test split (replace with your data loading␣
+↪process)
+# Assuming 'df' contains the dataset with the features and target 'target'
+# For example:
+# df = pd.read_csv('your_dataset.csv')
+X = df.drop(columns=['target'])
+y = df['target']
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,␣
+↪random_state=42)
+# Create a Random Forest classifier
+rf_classifier = RandomForestClassifier(random_state=42)
+# Train the classifier on the training data
+rf_classifier.fit(X_train, y_train)
+# Make predictions on the test data
+y_pred = rf_classifier.predict(X_test)
+# Calculate accuracy
+test_accuracy = accuracy_score(y_test, y_pred)
+# Print the results
+print("Test Accuracy:", test_accuracy)
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(conf_matrix)
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+#Remove OverFitting for the Random Forest
+import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix,␣
+↪classification_report
+# Load the dataset and perform train-test split (replace with your data loading␣
+↪process)
+# Assuming 'df' contains the dataset with the features and target 'target'
+# For example:
+# df = pd.read_csv('your_dataset.csv')
+X = df.drop(columns=['target'])
+y = df['target']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,␣
+↪random_state=42)
+
+# Create a Random Forest classifier
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Limit the maximum depth of the trees to control overfitting
+rf_classifier.set_params(max_depth=10)
+
+# Increase minimum sample requirements to prevent overfitting
+rf_classifier.set_params(min_samples_split=5, min_samples_leaf=2)
+
+# Perform cross-validation to find the optimal number of trees
+cv_scores = cross_val_score(rf_classifier, X_train, y_train, cv=5)
+
+# Get the average cross-validation score and choose the number of trees␣
+↪accordingly
+n_estimators = int(cv_scores.mean() * 100)
+
+# Set the number of trees for the final model
+rf_classifier.set_params(n_estimators=n_estimators)
+
+# Train the classifier on the training data
+rf_classifier.fit(X_train, y_train)
+
+# Make predictions on the test data
+y_pred = rf_classifier.predict(X_test)
+
+# Calculate accuracy
+test_accuracy = accuracy_score(y_test, y_pred)
+
+# Print the results
+print("Optimal number of trees:", n_estimators)
+print("Test Accuracy:", test_accuracy)
+
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(conf_matrix)
+
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+#Random Forest classifier Hyper Parameter Tuning
+import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix,␣
+↪classification_report
+# Load the dataset and perform train-test split (replace with your data loading␣
+↪process)
+# Assuming 'df' contains the dataset with the features and target 'target'
+# For example:
+# df = pd.read_csv('your_dataset.csv')
+X = df.drop(columns=['target'])
+y = df['target']
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,␣
+↪random_state=42)
+# Create a Random Forest classifier
+rf_classifier = RandomForestClassifier(random_state=42)
+# Perform GridSearchCV to find the best hyperparameters
+param_grid = {
+'n_estimators': [50, 100, 150],
+'max_depth': [None, 10, 20],
+'min_samples_split': [2, 5, 10],
+'min_samples_leaf': [1, 2, 4]
+}
+grid_search = GridSearchCV(rf_classifier, param_grid, cv=5)
+grid_search.fit(X_train, y_train)
+# Get the best hyperparameters
+best_rf_model = grid_search.best_estimator_
+# Fit the best model to the training data
+best_rf_model.fit(X_train, y_train)
+# Make predictions on the test data
+y_pred = best_rf_model.predict(X_test)
+# Calculate accuracy
+test_accuracy = accuracy_score(y_test, y_pred)
+# Print the results
+print("Best Hyperparameters:", grid_search.best_params_)
+print("Test Accuracy:", test_accuracy)
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(conf_matrix)
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+#Train the Random Forest Classifier with Regularization
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+# Step 1: Load the dataset
+# Replace this with your actual dataset loading process
+# Assuming 'df' contains the dataset with the features and target 'cardio'
+# For example:
+# df = pd.read_csv('your_dataset.csv')
+# Step 2: Data Preprocessing (if needed)
+# If needed, perform data preprocessing steps here, such as encoding␣
+↪categorical variables, scaling, etc.
+# Step 3: Train-Test Split
+X = df.drop(columns=['target'])
+y = df['target']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,␣
+↪random_state=42)
+# Step 4: Train the Random Forest Classifier with Regularization
+# Apply regularization hyperparameters
+model_rf_l1 = RandomForestClassifier(min_samples_split=5, min_samples_leaf=2,␣
+↪max_features='sqrt', random_state=42)
+model_rf_l1.fit(X_train, y_train)
+model_rf_l2 = RandomForestClassifier(min_samples_split=10, min_samples_leaf=5,␣
+↪max_features='log2', random_state=42)
+model_rf_l2.fit(X_train, y_train)
+# Step 5: Evaluate the models
+y_pred_rf_l1 = model_rf_l1.predict(X_test)
+y_pred_rf_l2 = model_rf_l2.predict(X_test)
+accuracy_rf_l1 = accuracy_score(y_test, y_pred_rf_l1)
+accuracy_rf_l2 = accuracy_score(y_test, y_pred_rf_l2)
+print("Accuracy with L1 Regularization (Random Forest):", accuracy_rf_l1)
+print("Accuracy with L2 Regularization (Random Forest):", accuracy_rf_l2)
+# Step 6: Calculate and compare the confusion matrices
+conf_matrix_rf_l1 = confusion_matrix(y_test, y_pred_rf_l1)
+conf_matrix_rf_l2 = confusion_matrix(y_test, y_pred_rf_l2)
+print("Confusion Matrix with L1 Regularization (Random Forest):")
+print(conf_matrix_rf_l1)
+print("Confusion Matrix with L2 Regularization (Random Forest):")
+print(conf_matrix_rf_l2)
+
+#Data Augmentation
+import pandas as pd
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix,␣
+↪classification_report
+from sklearn.utils import resample
+# Load the dataset and perform train-test split (replace with your data loading␣
+↪process)
+# Assuming 'df' contains the dataset with the features and target 'target'
+# For example:
+# df = pd.read_csv('your_dataset.csv')
+X = df.drop(columns=['target'])
+y = df['target']
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25,␣
+↪random_state=42)
+# Data augmentation using resampling (assuming class imbalance)
+X_train_augmented, y_train_augmented = resample(X_train[y_train == 1],␣
+↪y_train[y_train == 1],
+n_samples=X_train[y_train == 0].
+↪shape[0],
+replace=True, random_state=42)
+# Concatenate the augmented data with the original data
+X_train_augmented = pd.concat([X_train[y_train == 0], X_train_augmented])
+y_train_augmented = pd.concat([y_train[y_train == 0], y_train_augmented])
+# Create a Random Forest classifier
+rf_classifier = RandomForestClassifier(random_state=42)
+# Perform GridSearchCV to find the best hyperparameters
+param_grid = {
+'n_estimators': [50, 100, 150],
+'max_depth': [None, 10, 20],
+'min_samples_split': [2, 5, 10],
+'min_samples_leaf': [1, 2, 4]
+}
+grid_search = GridSearchCV(rf_classifier, param_grid, cv=5)
+grid_search.fit(X_train_augmented, y_train_augmented)
+# Get the best hyperparameters
+best_rf_model = grid_search.best_estimator_
+# Fit the best model to the training data
+best_rf_model.fit(X_train_augmented, y_train_augmented)
+# Make predictions on the test data
+y_pred = best_rf_model.predict(X_test)
+# Calculate accuracy
+test_accuracy = accuracy_score(y_test, y_pred)
+# Print the results
+print("Best Hyperparameters:", grid_search.best_params_)
+print("Test Accuracy:", test_accuracy)
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(conf_matrix)
+# Classification Report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+# Accuracy values for each model
+models = {
+'Logistic Regression': 0.7804878048780488,
+'Support Vector Machines': 0.8048780487804879,
+'Decision Trees': 0.9766536964980544,
+'Random Forests': 0.9883268482490273,
+'Gradient Boosting': 0.9766536964980544,
+'k-Nearest Neighbors': 0.9024390243902439,
+'Naive Bayes': 0.8,
+'Neural Networks': 0.957198441028595
+}
+# Sort the models dictionary by model name for consistent ordering in the plot
+sorted_models = sorted(models.items())
+# Extract model names and accuracies for the plot
+model_names, accuracies = zip(*sorted_models)
+# Plot the results as a line graph
+plt.figure(figsize=(10, 6))
+plt.plot(model_names, accuracies, marker='o')
+plt.title("Model Accuracies")
+plt.xlabel("Model")
+plt.ylabel("Accuracy")
+plt.ylim(0.5, 1.5)
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.tight_layout()
+# Annotate data points with accuracy values
+for i, (model_name, accuracy) in enumerate(sorted_models):
+plt.text(model_name, accuracy, f"{accuracy:.2f}", ha='center', va='bottom',␣
+↪fontsize=10)
+plt.show()
