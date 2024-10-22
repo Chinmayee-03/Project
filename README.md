@@ -1,4 +1,4 @@
-# Project
+# Heart Disease Prediction
 Introduction:
 The Cardiovascular Heart Disease Prediction project uses a dataset of 1025 samples and 14 features, some of which include age, gender, chest pain type, resting blood pressure, serum cholestoral, fasting blood sugar, maximum heart rate achieved etc .Data analysis has been done to arrive at the number of patients. The machine learning model helps us in determining whether .The goal of the project is to provide a detailed analysis and accurate affected with heart disease and what are the major attributes contributing for the same. The machine learning model helps us in determining whether the patient is believed to have exposed to heart disease or not.The goal of the project is to provide a detailed analysis and accurate prediction from the real world dataset available on kaggle.
 
